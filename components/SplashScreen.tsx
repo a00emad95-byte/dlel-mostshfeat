@@ -16,12 +16,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
 
   return (
     <div 
-      className={`dark fixed inset-0 bg-[#020617] flex flex-col items-center justify-center z-50 touch-manipulation cursor-pointer select-none overflow-hidden transition-all duration-500 ease-in-out ${isExiting ? 'opacity-0 scale-110 blur-lg' : 'opacity-100'}`}
+      className={`dark fixed inset-0 bg-[#020617]/80 backdrop-blur-sm flex flex-col items-center justify-center z-50 touch-manipulation cursor-pointer select-none overflow-hidden transition-all duration-500 ease-in-out ${isExiting ? 'opacity-0 scale-110 blur-lg' : 'opacity-100'}`}
       onClick={handleStart}
     >
       {/* Background - Deep Slate/Navy Professional Gradient */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#020617]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a]/90 to-[#020617]/90"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-blue-900/5 rounded-full blur-[180px]"></div>
       </div>
 
@@ -47,7 +47,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
         </div>
         
         {/* Interaction Prompt */}
-        <div className="mt-24 flex flex-col items-center gap-6">
+        <div className="mt-28 flex flex-col items-center gap-8">
           <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-white/20 transition-transform duration-200 animate-bounce">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="m7 13 5 5 5-5M7 6l5 5 5-5"/>
@@ -58,12 +58,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
       </div>
 
       {/* Developer Credit - Upscaled & Font Changed */}
-      <div className="absolute bottom-12 flex flex-col items-center gap-1.5 no-print">
+      <div className="absolute bottom-12 flex flex-col items-center gap-3 no-print">
         <div className="text-blue-50/70 font-mono font-bold tracking-[0.4em] uppercase text-xs md:text-sm drop-shadow-lg">
           AHMAD EMAD
         </div>
         <div className="text-blue-50/40 font-mono font-bold tracking-[0.2em] uppercase text-[8px] md:text-[10px]">
-          update 0.2
+          UPD-02
         </div>
       </div>
     </div>

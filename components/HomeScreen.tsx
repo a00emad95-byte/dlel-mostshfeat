@@ -1,15 +1,16 @@
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Search, MapPin, FileDown, ArrowUpCircle, ChevronRight, X, Moon, Sun, Building2, Microscope, Package, CalendarDays } from 'lucide-react';
-import { HOSPITALS, LABS } from '../constants';
+import { HOSPITALS, LABS, PROSTHETICS, HEARING, SPEECH, PHYSIO } from '../constants';
 import HospitalCard from './HospitalCard';
 import Toast from './Toast';
 import BottomNav, { TabId } from './BottomNav';
 import LogoIcon from './LogoIcon';
 import AppLogo from './AppLogo';
+import { Accessibility, Ear, MessageSquare, Activity } from 'lucide-react';
 
 type ToastState = { message: string; type: 'success' | 'error' | 'info'; } | null;
-type EntityType = 'hospitals' | 'labs';
+type EntityType = 'hospitals' | 'labs' | 'prosthetics' | 'hearing' | 'speech' | 'physio';
 
 interface HomeScreenProps {
   onBack: () => void;
@@ -30,7 +31,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
   const mainRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const currentData = useMemo(() => activeTab === 'hospitals' ? HOSPITALS : LABS, [activeTab]);
+  const currentData = useMemo(() => {
+    switch (activeTab) {
+      case 'hospitals': return HOSPITALS;
+      case 'labs': return LABS;
+      case 'prosthetics': return PROSTHETICS;
+      case 'hearing': return HEARING;
+      case 'speech': return SPEECH;
+      case 'physio': return PHYSIO;
+      default: return HOSPITALS;
+    }
+  }, [activeTab]);
 
   const governorates = useMemo(() => {
     return Array.from(new Set(currentData.map((h) => h.gov))).sort();
@@ -132,7 +143,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#fafbfc] dark:bg-[#020617] relative overflow-hidden font-cairo print:h-auto print:overflow-visible print:block transition-colors duration-300">
+    <div className="flex flex-col h-full bg-transparent relative overflow-hidden font-cairo print:h-auto print:overflow-visible print:block transition-colors duration-300">
       
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
@@ -140,7 +151,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
       <div className="print-only p-8 border-b-2 border-black mb-6">
         <div className="flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-black text-black mb-2">دليل {activeTab === 'hospitals' ? 'المستشفيات' : 'المعامل والأشعة'}</h1>
+            <h1 className="text-3xl font-black text-black mb-2">دليل {
+              activeTab === 'hospitals' ? 'المستشفيات' : 
+              activeTab === 'labs' ? 'المعامل والأشعة' : 
+              activeTab === 'prosthetics' ? 'الأجهزة التعويضية' : 
+              activeTab === 'hearing' ? 'السمع والاتزان' : 
+              activeTab === 'speech' ? 'التخاطب' : 'العلاج الطبيعي'
+            }</h1>
             <p className="text-sm font-bold text-gray-600">صندوق الخدمات الطبية - القوات المسلحة</p>
           </div>
           <div className="text-left">
@@ -151,7 +168,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
       </div>
 
       {/* Minimalist Compact Header */}
-      <header className={`bg-[#fafbfc]/95 dark:bg-[#020617]/95 backdrop-blur-md pt-safe transition-all duration-300 z-30 no-print sticky top-0 ${isScrolled ? 'border-b border-slate-200 dark:border-slate-800 shadow-sm' : ''}`}>
+      <header className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-md pt-safe transition-all duration-300 z-30 no-print sticky top-0 ${isScrolled ? 'border-b border-slate-200 dark:border-slate-800 shadow-sm' : ''}`}>
         <div className="flex flex-col px-4 pt-4 pb-2">
           
           <div className="flex justify-between items-center mb-3">
@@ -193,7 +210,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={activeTab === 'hospitals' ? "ابحث باسم المستشفى..." : "ابحث باسم المعمل..."}
+                placeholder={activeTab === 'hospitals' ? "ابحث باسم المستشفى..." : "ابحث بالاسم..."}
                 className="w-full py-2.5 pr-10 pl-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 font-bold focus:outline-none focus:border-slate-400 dark:focus:border-slate-600 transition-all shadow-sm"
              />
              {searchTerm && (
@@ -206,21 +223,49 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
              )}
           </div>
 
-          <div className="flex gap-2 mt-2 overflow-x-auto pb-1 no-scrollbar">
+          <div className="flex gap-2 mt-2 overflow-x-auto pb-1 no-scrollbar -mx-4 px-4">
              <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg shrink-0 border border-slate-200 dark:border-slate-800">
                 <button 
                   onClick={() => setActiveTab('hospitals')}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all ${activeTab === 'hospitals' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all whitespace-nowrap ${activeTab === 'hospitals' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
                 >
                   <Building2 size={14} />
                   <span>مستشفيات</span>
                 </button>
                 <button 
                   onClick={() => setActiveTab('labs')}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all ${activeTab === 'labs' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all whitespace-nowrap ${activeTab === 'labs' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
                 >
                   <Microscope size={14} />
-                  <span>معامل</span>
+                  <span>معامل وأشعة</span>
+                </button>
+                <button 
+                  onClick={() => setActiveTab('prosthetics')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all whitespace-nowrap ${activeTab === 'prosthetics' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                >
+                  <Accessibility size={14} />
+                  <span>أجهزة تعويضية</span>
+                </button>
+                <button 
+                  onClick={() => setActiveTab('hearing')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all whitespace-nowrap ${activeTab === 'hearing' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                >
+                  <Ear size={14} />
+                  <span>سمع واتزان</span>
+                </button>
+                <button 
+                  onClick={() => setActiveTab('speech')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all whitespace-nowrap ${activeTab === 'speech' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                >
+                  <MessageSquare size={14} />
+                  <span>تخاطب</span>
+                </button>
+                <button 
+                  onClick={() => setActiveTab('physio')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all whitespace-nowrap ${activeTab === 'physio' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                >
+                  <Activity size={14} />
+                  <span>علاج طبيعي</span>
                 </button>
              </div>
 
@@ -270,10 +315,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
           </div>
           
           <div className="mt-8 mb-4 flex flex-col items-center justify-center text-slate-300 dark:text-slate-800 no-print">
-            <div className="opacity-60 flex flex-col items-center mt-4">
-              <LogoIcon className="w-6 h-6 opacity-20 grayscale mb-1" />
-              <p className="text-[10px] md:text-xs font-mono font-bold tracking-[0.2em] uppercase opacity-50">Ahmad Emad</p>
-              <p className="text-[8px] font-mono font-bold tracking-[0.1em] uppercase opacity-40 mt-1">update 0.2</p>
+            <div className="opacity-60 flex flex-col items-center mt-8 gap-2.5">
+              <LogoIcon className="w-6 h-6 opacity-20 grayscale" />
+              <div className="flex flex-col items-center gap-1.5">
+                <p className="text-[10px] md:text-xs font-mono font-bold tracking-[0.2em] uppercase opacity-50">Ahmad Emad</p>
+                <p className="text-[8px] font-mono font-bold tracking-[0.1em] uppercase opacity-40">UPD-02</p>
+              </div>
             </div>
           </div>
         </div>
@@ -323,9 +370,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onBack, isDark, toggleTheme }) 
                         </p>
                     </div>
 
-                    <div className="pt-4 text-xs text-slate-400 dark:text-slate-500 font-bold">
+                    <div className="pt-6 flex flex-col items-center gap-2 text-xs text-slate-400 dark:text-slate-500 font-bold border-t border-slate-100 dark:border-slate-800 w-full">
                         <p>تطوير: أحمد عماد</p>
-                        <p className="text-[10px] mt-1 opacity-70">update 0.2</p>
+                        <p className="text-[10px] opacity-70">UPD-02</p>
                     </div>
                 </div>
               </div>
